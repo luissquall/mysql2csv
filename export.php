@@ -19,17 +19,22 @@
  * # Should print 1 after 15 seconds
  * sleep 15 && cat at-1 && rm at-1
  * ``` 
+ * 
  * 2. `mysql`
+ * 
  * 3. db user with FILE permissions
  * ```
  * echo "GRANT FILE ON *.* TO '$user'@'localhost';" | mysql -u root -p
  * ```
+ * 
  * 4. Make a copy of config.default.php & edit the new file
  * ```
  * cp config.default.php config.php
  * vim config.php
  * ```
  * 5. Folder $config['folder'] should be writable by mysql user
+ * 
+ * 6. Remove user www-data from `/etc/at.deny
  * 
  * ## Debugging
  * 
