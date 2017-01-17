@@ -29,6 +29,7 @@
  * cp config.default.php config.php
  * vim config.php
  * ```
+ * 5. Folder $config['folder'] should be writable by mysql user
  * 
  * ## Debugging
  * 
