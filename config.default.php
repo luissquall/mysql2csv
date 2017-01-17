@@ -1,6 +1,7 @@
 <?php
 $config = [
 	'filename' => '',
+	'folder' => '',
 	'user' => '',
 	'password' => '',
 	'database' => '',

@@ -33,7 +33,7 @@
  * ## Debugging
  * 
  * ```
- * ls -ltha /tmp/seduc-*
+ * ls -ltha $folder/*
  * 
  * sudo at -l
  * ```
@@ -46,7 +46,7 @@ $filename = sprintf(
 	$config['filename'],
 	hash('sha256', $config['query'] . time())
 );
-$file = '/tmp/' . $filename;
+$file = sprintf('%s/%s', $config['folder'], $filename);
 $match = array(
 	'{{ bin }}' => $bin,
 	'{{ user }}' => $config['user'],

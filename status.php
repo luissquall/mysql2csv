@@ -48,11 +48,9 @@ if (!$error) {
 		$status = '-';
 
 		if (file_exists($file)) {
-			if (copy($file, sprintf('%s/files/%s', __DIR__, basename($file)))) {
-				$status = 'copied';
-			}
+			$status = 'complete';
 		}
-	}			
+	}
 	printf("Status: %s\n", $status);
 } else {
 	echo 'Error';
