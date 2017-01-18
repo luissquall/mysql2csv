@@ -54,12 +54,12 @@ $filename = sprintf(
 $file = sprintf('%s/%s', $config['folder'], $filename);
 $bins = array(
 	'mysql' => '/usr/bin/mysql',
-	'sed' => '/bin/sed -i'
+	'sed' => "/bin/sed -i '1s/^/\\xef\\xbb\\xbf/'"
 );
 if (PHP_OS == 'Darwin') {
 	$bins = array(
 		'mysql' => '/usr/local/mysql/bin/mysql',
-		'sed' => "/usr/bin/sed -i ''"
+		'sed' => "/usr/bin/sed -i '' -e '1s/^/'\$'\\xEF\\xBB\\xBF''/'"
 	);
 }
 
@@ -77,7 +77,7 @@ $cmd = str_replace(
 	array_keys($match),
 	array_values($match),
 "/usr/bin/at now << 'EOF' 2>&1
-{{ mysql_bin }} -u {{ user }} -p'{{ password }}' {{ database }} 2>> {{ error_log }} << 'EOF2' && {{ sed_bin }} -e '1s/^/'\$'\\xEF\\xBB\\xBF''/' {{ file }}
+{{ mysql_bin }} -u {{ user }} -p'{{ password }}' {{ database }} 2>> {{ error_log }} << 'EOF2' && {{ sed_bin }} {{ file }}
 {{ query }}
 INTO OUTFILE '{{ file }}'
 FIELDS TERMINATED BY ','
