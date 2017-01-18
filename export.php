@@ -54,15 +54,17 @@ $filename = sprintf(
 $file = sprintf('%s/%s', $config['folder'], $filename);
 $bins = array(
 	'mysql' => '/usr/bin/mysql',
-	'sed' => "/bin/sed -i '1s/^/\\xef\\xbb\\xbf/'"
+	'sed' => "/bin/sed -i '1s/^/\\xef\\xbb\\xbf\{{ headers }}\n/'"
 );
 if (PHP_OS == 'Darwin') {
 	$bins = array(
 		'mysql' => '/usr/local/mysql/bin/mysql',
-		'sed' => "/usr/bin/sed -i '' -e '1s/^/'\$'\\xEF\\xBB\\xBF''/'"
+		'sed' => "/usr/bin/sed -i '' -e '1s/^/'\$'\\xEF\\xBB\\xBF''{{ headers }}\\'\$'\\n''/'"
 	);
 }
 
+$headers = str_replace("'", "'\"'\"'", $config['headers']);
+$bins['sed'] = str_replace('{{ headers }}', $headers, $bins['sed']);
 $match = array(
 	'{{ mysql_bin }}' => $bins['mysql'],
 	'{{ sed_bin }}' => $bins['sed'],
