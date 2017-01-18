@@ -54,7 +54,7 @@ $filename = sprintf(
 $file = sprintf('%s/%s', $config['folder'], $filename);
 $bins = array(
 	'mysql' => '/usr/bin/mysql',
-	'sed' => "/bin/sed -i '1s/^/\\xef\\xbb\\xbf\{{ headers }}\n/'"
+	'sed' => "/bin/sed -i '1s/^/\\xef\\xbb\\xbf{{ headers }}\\n/'"
 );
 if (PHP_OS == 'Darwin') {
 	$bins = array(
