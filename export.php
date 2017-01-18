@@ -59,14 +59,15 @@ $match = array(
 	'{{ password }}' => $config['password'],
 	'{{ database }}' => $config['database'],
 	'{{ query }}' => $config['query'],
-	'{{ file }}' => $file
+	'{{ file }}' => $file,
+	'{{ error_log }}' => empty($config['error_log']) ? __DIR__ . '/error.log' : $config['error_log']
 );
 
 $cmd = str_replace(
 	array_keys($match),
 	array_values($match),
 "/usr/bin/at now << 'EOF' 2>&1
-{{ bin }} -u {{ user }} -p'{{ password }}' {{ database }} << 'EOF2'
+{{ bin }} -u {{ user }} -p'{{ password }}' {{ database }} 2>> {{ error_log }} << 'EOF2'
 {{ query }}
 INTO OUTFILE '{{ file }}'
 FIELDS TERMINATED BY ','
