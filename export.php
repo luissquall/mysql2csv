@@ -46,15 +46,26 @@
  */
 include 'config.php';
 
-$bin = PHP_OS == 'Darwin' ? '/usr/local/mysql/bin/mysql' : '/usr/bin/mysql';
 $job = '';
 $filename = sprintf(
 	$config['filename'],
 	hash('sha256', $config['query'] . time())
 );
 $file = sprintf('%s/%s', $config['folder'], $filename);
+$bins = array(
+	'mysql' => '/usr/bin/mysql',
+	'sed' => '/bin/sed -i'
+);
+if (PHP_OS == 'Darwin') {
+	$bins = array(
+		'mysql' => '/usr/local/mysql/bin/mysql',
+		'sed' => "/usr/bin/sed -i ''"
+	);
+}
+
 $match = array(
-	'{{ bin }}' => $bin,
+	'{{ mysql_bin }}' => $bins['mysql'],
+	'{{ sed_bin }}' => $bins['sed'],
 	'{{ user }}' => $config['user'],
 	'{{ password }}' => $config['password'],
 	'{{ database }}' => $config['database'],
@@ -62,12 +73,11 @@ $match = array(
 	'{{ file }}' => $file,
 	'{{ error_log }}' => empty($config['error_log']) ? __DIR__ . '/error.log' : $config['error_log']
 );
-
 $cmd = str_replace(
 	array_keys($match),
 	array_values($match),
 "/usr/bin/at now << 'EOF' 2>&1
-{{ bin }} -u {{ user }} -p'{{ password }}' {{ database }} 2>> {{ error_log }} << 'EOF2'
+{{ mysql_bin }} -u {{ user }} -p'{{ password }}' {{ database }} 2>> {{ error_log }} << 'EOF2' && {{ sed_bin }} -e '1s/^/'\$'\\xEF\\xBB\\xBF''/' {{ file }}
 {{ query }}
 INTO OUTFILE '{{ file }}'
 FIELDS TERMINATED BY ','
