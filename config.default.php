@@ -6,5 +6,6 @@ $config = array(
 	'password' => '',
 	'database' => '',
 	'status_service' => 'http://host/mysql2csv/status.php',
+	'error_log' => '',
 	'query' => ""
 );
