@@ -79,7 +79,7 @@ $cmd = str_replace(
 	array_keys($match),
 	array_values($match),
 "/usr/bin/at now << 'EOF' 2>&1
-{{ mysql_bin }} -u {{ user }} -p'{{ password }}' {{ database }} 2>> {{ error_log }} << 'EOF2' && {{ sed_bin }} {{ file }}
+{{ mysql_bin }} -u {{ user }} -p'{{ password }}' {{ database }} 2>> '{{ error_log }}' << 'EOF2' && {{ sed_bin }} '{{ file }}'
 {{ query }}
 INTO OUTFILE '{{ file }}'
 FIELDS TERMINATED BY ','
