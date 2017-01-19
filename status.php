@@ -47,7 +47,7 @@ if (!$error) {
 	} else {
 		$status = '-';
 
-		if (file_exists($file)) {
+		if (is_file($file)) {
 			$status = 'complete';
 		}
 	}
