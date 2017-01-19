@@ -52,22 +52,25 @@ $filename = sprintf(
 	hash('sha256', $config['query'] . time())
 );
 $file = sprintf('%s/%s', $config['folder'], $filename);
-$bins = array(
+$cmds = array(
 	'mysql' => '/usr/bin/mysql',
 	'sed' => "/bin/sed -i '1s/^/\\xef\\xbb\\xbf{{ headers }}\\n/'"
 );
 if (PHP_OS == 'Darwin') {
-	$bins = array(
+	$cmds = array(
 		'mysql' => '/usr/local/mysql/bin/mysql',
 		'sed' => "/usr/bin/sed -i '' -e '1s/^/'\$'\\xEF\\xBB\\xBF''{{ headers }}\\'\$'\\n''/'"
 	);
 }
+if (!empty($config['bins']['mysql'])) {
+	$cmds['mysql'] = $config['bins']['mysql'];
+}
 
 $headers = str_replace("'", "'\"'\"'", $config['headers']);
-$bins['sed'] = str_replace('{{ headers }}', $headers, $bins['sed']);
+$cmds['sed'] = str_replace('{{ headers }}', $headers, $cmds['sed']);
 $match = array(
-	'{{ mysql_bin }}' => $bins['mysql'],
-	'{{ sed_bin }}' => $bins['sed'],
+	'{{ mysql_cmd }}' => $cmds['mysql'],
+	'{{ sed_cmd }}' => $cmds['sed'],
 	'{{ user }}' => $config['user'],
 	'{{ password }}' => $config['password'],
 	'{{ database }}' => $config['database'],
@@ -79,7 +82,7 @@ $cmd = str_replace(
 	array_keys($match),
 	array_values($match),
 "/usr/bin/at now << 'EOF' 2>&1
-{{ mysql_bin }} -u {{ user }} -p'{{ password }}' {{ database }} 2>> '{{ error_log }}' << 'EOF2' && {{ sed_bin }} '{{ file }}'
+{{ mysql_cmd }} -u {{ user }} -p'{{ password }}' {{ database }} 2>> '{{ error_log }}' << 'EOF2' && {{ sed_cmd }} '{{ file }}'
 {{ query }}
 INTO OUTFILE '{{ file }}'
 FIELDS TERMINATED BY ','

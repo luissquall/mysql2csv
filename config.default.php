@@ -1,5 +1,8 @@
 <?php
 $config = array(
+	'bins' => array(
+		'mysql' => ''
+	),
 	'filename' => '',
 	'folder' => '',
 	'user' => '',
