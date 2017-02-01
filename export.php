@@ -22,19 +22,22 @@
  * 
  * 2. `mysql`
  * 
- * 3. db user with FILE permissions
+ * 3. `zip`
+ * 
+ * 4. db user with FILE permissions
  * ```
  * echo "GRANT FILE ON *.* TO '$user'@'localhost';" | mysql -u root -p
  * ```
  * 
- * 4. Make a copy of config.default.php & edit the new file
+ * 5. Make a copy of config.default.php & edit the new file
  * ```
  * cp config.default.php config.php
  * vim config.php
  * ```
- * 5. Folder $config['folder'] should be writable by mysql user
  * 
- * 6. Remove user www-data from `/etc/at.deny
+ * 6. Folder $config['folder'] should be writable by mysql user
+ * 
+ * 7. Remove user www-data from `/etc/at.deny
  * 
  * ## Debugging
  * 
