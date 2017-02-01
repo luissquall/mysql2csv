@@ -52,18 +52,18 @@ $filename = sprintf(
 	hash('sha256', $config['query'] . time())
 );
 $file = sprintf('%s/%s', $config['folder'], $filename);
+$bins = array(
+	'mysql' => !empty($config['bins']['mysql']) ? $config['bins']['mysql'] : '/usr/bin/mysql',
+	'sed' => !empty($config['bins']['sed']) ? $config['bins']['sed'] : '/bin/sed',
+	'zip' => !empty($config['bins']['zip']) ? $config['bins']['zip'] : '/usr/bin/zip'
+);
 $cmds = array(
-	'mysql' => '/usr/bin/mysql',
-	'sed' => "/bin/sed -i '1s/^/\\xef\\xbb\\xbf{{ headers }}\\n/'"
+	'mysql' => $bins['mysql'],
+	'sed' => $bins['sed'] . " -i '1s/^/\\xef\\xbb\\xbf{{ headers }}\\n/'",
+	'zip' => $bins['zip'] . ' -j'
 );
 if (PHP_OS == 'Darwin') {
-	$cmds = array(
-		'mysql' => '/usr/local/mysql/bin/mysql',
-		'sed' => "/usr/bin/sed -i '' -e '1s/^/'\$'\\xEF\\xBB\\xBF''{{ headers }}\\'\$'\\n''/'"
-	);
-}
-if (!empty($config['bins']['mysql'])) {
-	$cmds['mysql'] = $config['bins']['mysql'];
+	$cmds['sed'] = $bins['sed'] . " -i '' -e '1s/^/'\$'\\xEF\\xBB\\xBF''{{ headers }}\\'\$'\\n''/'";
 }
 
 $headers = str_replace("'", "'\"'\"'", $config['headers']);
@@ -71,6 +71,7 @@ $cmds['sed'] = str_replace('{{ headers }}', $headers, $cmds['sed']);
 $match = array(
 	'{{ mysql_cmd }}' => $cmds['mysql'],
 	'{{ sed_cmd }}' => $cmds['sed'],
+	'{{ zip_cmd }}' => $cmds['zip'],
 	'{{ user }}' => $config['user'],
 	'{{ password }}' => $config['password'],
 	'{{ database }}' => $config['database'],
@@ -82,7 +83,7 @@ $cmd = str_replace(
 	array_keys($match),
 	array_values($match),
 "/usr/bin/at now << 'EOF' 2>&1
-{{ mysql_cmd }} -u {{ user }} -p'{{ password }}' {{ database }} 2>> '{{ error_log }}' << 'EOF2' && {{ sed_cmd }} '{{ file }}'
+{{ mysql_cmd }} -u {{ user }} -p'{{ password }}' {{ database }} 2>> '{{ error_log }}' << 'EOF2' && {{ sed_cmd }} '{{ file }}' && {{ zip_cmd }} '{{ file }}'.zip '{{ file }}'
 {{ query }}
 INTO OUTFILE '{{ file }}'
 FIELDS TERMINATED BY ','

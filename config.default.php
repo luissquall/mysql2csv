@@ -1,7 +1,9 @@
 <?php
 $config = array(
 	'bins' => array(
-		'mysql' => ''
+		'mysql' => '',
+		'sed' => '',
+		'zip' => ''
 	),
 	'filename' => '',
 	'folder' => '',
